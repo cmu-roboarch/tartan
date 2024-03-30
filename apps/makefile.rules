@@ -1,0 +1,52 @@
+INC := $(foreach d, $(INC_DIRS), -I$d)
+SRC := $(foreach d, $(SRC_DIRS), $(wildcard $d/*.cpp))
+OBJ_BARE := $(SRC:%.cpp=$(OBJ_DIR)/bare_%.o)
+OBJ_BASELINE := $(SRC:%.cpp=$(OBJ_DIR)/baseline_%.o)
+OBJ_TARTAN := $(SRC:%.cpp=$(OBJ_DIR)/tartan_%.o)
+
+EXE_BARE := $(BIN_DIR)/$(EXE_NAME)_bare.out
+EXE_BASELINE := $(BIN_DIR)/$(EXE_NAME)_baseline.out
+EXE_TARTAN := $(BIN_DIR)/$(EXE_NAME)_tartan.out
+
+CXX := g++
+CXXFLAGS := -std=c++17 -Wall $(INC) -MMD -MP -Wfatal-errors -fopenmp
+LDFLAGS := -fopenmp -L/usr/local/lib
+
+.PHONY: all clean bare baseline tartan
+
+all: bare baseline tartan
+
+bare: $(EXE_BARE)
+
+baseline: CXXFLAGS += -DHIGHPERF -O3
+baseline: $(EXE_BASELINE)
+
+tartan: CXXFLAGS += -DHIGHPERF -DTARTAN -O3
+tartan: $(EXE_TARTAN)
+
+$(EXE_BARE): $(OBJ_BARE)
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+$(EXE_BASELINE): $(OBJ_BASELINE)
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+$(EXE_TARTAN): $(OBJ_TARTAN)
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+$(OBJ_DIR)/bare_%.o: %.cpp
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/baseline_%.o: %.cpp
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/tartan_%.o: %.cpp
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -rf $(OBJ_DIR)
+	rm *.out || true
+
+-include $(OBJ_DIR)/*.d

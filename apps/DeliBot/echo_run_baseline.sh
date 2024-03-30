@@ -1,0 +1,39 @@
+#! /usr/bin/env bash
+
+# MIT License
+#
+# Copyright (c) 2024 Carnegie Mellon University
+#
+# This file is part of Tartan.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+BINARY="delibot_baseline.out"
+INPUT_MAP="./input-maps/wean.dat"
+INPUT_MEASUREMENTS="./input-measurements/log1.txt"
+
+if [[ ! -f $BINARY || ! -f $INPUT_MAP || ! -f $INPUT_MEASUREMENTS ]]; then
+    echo "Missing required files!"
+    echo "Binary: $BINARY ?"
+    echo "Input map: $INPUT_MAP ?"
+    echo "Input measurements: $INPUT_MEASUREMENTS ?"
+    exit 1
+fi
+
+echo "$(readlink -f $BINARY) --map=$(readlink -f $INPUT_MAP) --measurements=$(readlink -f $INPUT_MEASUREMENTS) --particles=10"
