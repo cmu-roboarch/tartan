@@ -4,10 +4,13 @@
 **/*.log
 **/__pycache__
 opencv_build
-pin-*
 res.*
 *.png
 **/verify.sh
 **/verify_all.sh
 temp
 TODO.txt
+misc/
+README.md
+LICENSE
+results/

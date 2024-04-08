@@ -34,6 +34,11 @@ PYTHON_MODULES_FLAG_FILE="./.python_modules.flag"
 OPENCV_FLAG_FILE="./.opencv.flag"
 APP_INPUS_FLAG_FILE="apps/.apps_set_up.flag"
 
+if [[ "$1" == "-f" || "$1" == "--force" ]]; then
+  rm -f "${LINUX_PROGRAMS_FLAG_FILE}" "${PYTHON_MODULES_FLAG_FILE}" "$OPENCV_FLAG_FILE" "$APP_INPUS_FLAG_FILE" || true
+  rm -rf opencv_build || true
+fi
+
 assert_file_exists() {
     local file_path="$1"
     if [ ! -f "$file_path" ]; then
@@ -61,13 +66,13 @@ if [[ ! -f "$LINUX_PROGRAMS_FLAG_FILE" ]]; then
         build-essential autoconf automake libbz2-dev
         liblzma-dev libcurl4-gnutls-dev libssl-dev cmake git
         libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev
-        libswscale-dev libopencv-dev libtbb-dev hyperfine jq
+        libswscale-dev libopencv-dev libtbb-dev jq
         parallel cppcheck coinor-libipopt-dev libgtk-3-dev
         libv4l-dev libxvidcore-dev libx264-dev libjpeg-dev
         libpng-dev libtiff-dev gfortran openexr
         libatlas-base-dev python3-dev libtbb2 libdc1394-22-dev
         git-lfs clang-format scons libconfig-dev libconfig++-dev
-        libhdf5-dev libelf-dev
+        libhdf5-dev libelf-dev python3-tk docker.io
     )
 
     sudo apt-get install -y "${packages[@]}"
@@ -174,7 +179,7 @@ cd apps/
 apps_dir=$(pwd)
 
 ./clean.sh
-./build.sh || (echo "Building applications failed. Exitting" && exit 1)
+./build.sh || (echo "Building applications failed. Exiting" && exit 1)
 
 for robot in Carri Deli Fly Home Move Patrol; do
     robot_dir="${robot}Bot"
